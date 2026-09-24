@@ -6,9 +6,18 @@
   "loginWithEmailAllowed": true,
   "roles": {
     "realm": [
-      { "name": "employee", "description": "Authenticated employee" },
-      { "name": "support-agent", "description": "Ticket support agent" },
-      { "name": "portal-admin", "description": "Portal administrator" }
+      {
+        "name": "employee",
+        "description": "Authenticated employee"
+      },
+      {
+        "name": "support-agent",
+        "description": "Ticket support agent"
+      },
+      {
+        "name": "portal-admin",
+        "description": "Portal administrator"
+      }
     ]
   },
   "clients": [
@@ -20,10 +29,15 @@
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
       "implicitFlowEnabled": false,
-      "redirectUris": ["http://localhost:9001/callback"],
-      "webOrigins": ["http://localhost:9001"],
+      "redirectUris": [
+        "http://localhost:9001/callback"
+      ],
+      "webOrigins": [
+        "http://localhost:9001"
+      ],
       "attributes": {
-        "pkce.code.challenge.method": "S256"
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:9001/"
       },
       "protocolMappers": [
         {
@@ -47,10 +61,15 @@
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
       "implicitFlowEnabled": false,
-      "redirectUris": ["http://localhost:9002/callback"],
-      "webOrigins": ["http://localhost:9002"],
+      "redirectUris": [
+        "http://localhost:9002/callback"
+      ],
+      "webOrigins": [
+        "http://localhost:9002"
+      ],
       "attributes": {
-        "pkce.code.challenge.method": "S256"
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:9002/"
       },
       "protocolMappers": [
         {
