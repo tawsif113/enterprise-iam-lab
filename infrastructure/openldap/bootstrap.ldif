@@ -1,0 +1,31 @@
+dn: ou=people,dc=acme,dc=local
+objectClass: organizationalUnit
+ou: people
+
+dn: ou=groups,dc=acme,dc=local
+objectClass: organizationalUnit
+ou: groups
+
+dn: uid=alice,ou=people,dc=acme,dc=local
+objectClass: inetOrgPerson
+uid: alice
+cn: Alice Engineer
+sn: Engineer
+givenName: Alice
+mail: alice@acme.local
+userPassword: Alice123!
+
+dn: uid=bob,ou=people,dc=acme,dc=local
+objectClass: inetOrgPerson
+uid: bob
+cn: Bob Support
+sn: Support
+givenName: Bob
+mail: bob@acme.local
+userPassword: Bob123!
+
+dn: cn=ticket-agents,ou=groups,dc=acme,dc=local
+objectClass: groupOfNames
+cn: ticket-agents
+member: uid=alice,ou=people,dc=acme,dc=local
+member: uid=bob,ou=people,dc=acme,dc=local

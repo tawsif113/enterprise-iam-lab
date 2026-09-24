@@ -1,0 +1,93 @@
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks: [iam]
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.7.4
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres
+      KC_DB_URL_DATABASE: ${POSTGRES_DB}
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+      KC_HOSTNAME: http://localhost:8080
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./keycloak/realm-enterprise-lab.json:/opt/keycloak/data/import/realm-enterprise-lab.json:ro
+    networks: [iam]
+
+  openldap:
+    image: osixia/openldap:1.5.0
+    environment:
+      LDAP_ORGANISATION: ${LDAP_ORGANISATION}
+      LDAP_DOMAIN: ${LDAP_DOMAIN}
+      LDAP_ADMIN_PASSWORD: ${LDAP_ADMIN_PASSWORD}
+      LDAP_TLS: "false"
+    ports:
+      - "127.0.0.1:1389:389"
+    volumes:
+      - ldap_data:/var/lib/ldap
+      - ldap_config:/etc/ldap/slapd.d
+      - ./openldap/bootstrap.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/50-bootstrap.ldif:ro
+    command: ["--copy-service"]
+    networks: [iam]
+
+  employee-portal:
+    build: ../apps/oidc-demo
+    environment:
+      APP_NAME: Employee Portal
+      CLIENT_ID: employee-portal
+      PORT: "9001"
+      REDIRECT_URI: http://localhost:9001/callback
+      OIDC_PUBLIC_BASE: http://localhost:8080
+      OIDC_INTERNAL_BASE: http://keycloak:8080
+      OIDC_REALM: enterprise-lab
+    ports:
+      - "127.0.0.1:9001:9001"
+    depends_on: [keycloak]
+    networks: [iam]
+
+  ticket-console:
+    build: ../apps/oidc-demo
+    environment:
+      APP_NAME: Ticket Console
+      CLIENT_ID: ticket-console
+      PORT: "9002"
+      REDIRECT_URI: http://localhost:9002/callback
+      OIDC_PUBLIC_BASE: http://localhost:8080
+      OIDC_INTERNAL_BASE: http://keycloak:8080
+      OIDC_REALM: enterprise-lab
+    ports:
+      - "127.0.0.1:9002:9002"
+    depends_on: [keycloak]
+    networks: [iam]
+
+volumes:
+  postgres_data:
+  ldap_data:
+  ldap_config:
+
+networks:
+  iam:
+    driver: bridge
