@@ -60,6 +60,7 @@ services:
       CLIENT_ID: employee-portal
       PORT: "9001"
       REDIRECT_URI: http://localhost:9001/callback
+      POST_LOGOUT_REDIRECT_URI: http://localhost:9001/
       OIDC_PUBLIC_BASE: http://localhost:8080
       OIDC_INTERNAL_BASE: http://keycloak:8080
       OIDC_REALM: enterprise-lab
@@ -75,6 +76,7 @@ services:
       CLIENT_ID: ticket-console
       PORT: "9002"
       REDIRECT_URI: http://localhost:9002/callback
+      POST_LOGOUT_REDIRECT_URI: http://localhost:9002/
       OIDC_PUBLIC_BASE: http://localhost:8080
       OIDC_INTERNAL_BASE: http://keycloak:8080
       OIDC_REALM: enterprise-lab
