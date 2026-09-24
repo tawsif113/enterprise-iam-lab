@@ -75,11 +75,19 @@ JWT      = token format
 
 ## Ticket API
 
-Run the Spring Boot API separately:
+The Spring Boot resource server uses **Gradle (Groovy DSL)**.
+
+Run it separately:
 
 ```bash
 cd services/ticket-api
-mvn spring-boot:run
+gradle bootRun
+```
+
+Run its tests with:
+
+```bash
+gradle test
 ```
 
 Then call it with an access token whose audience includes `ticket-api`:
