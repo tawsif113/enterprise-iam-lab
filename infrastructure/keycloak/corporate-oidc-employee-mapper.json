@@ -1,0 +1,9 @@
+{
+  "name": "corporate-users-are-employees",
+  "identityProviderAlias": "corporate-oidc",
+  "identityProviderMapper": "oidc-hardcoded-role-idp-mapper",
+  "config": {
+    "syncMode": "FORCE",
+    "role": "employee"
+  }
+}

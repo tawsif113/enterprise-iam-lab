@@ -5,28 +5,36 @@ flowchart LR
     B[Browser]
     EP[Employee Portal\nOIDC client]
     TC[Ticket Console\nOIDC client]
-    KC[Keycloak\nSSO / OIDC / OAuth 2.0]
-    LDAP[(OpenLDAP\nFederated users)]
+    KC[Main Keycloak\nenterprise-lab]
+    LDAP[(OpenLDAP)]
     API[Ticket API\nSpring Resource Server]
     PG[(PostgreSQL)]
-    IDP[External IdP\nOIDC or SAML]
+    EIDP[External Keycloak\ncorporate OIDC IdP]
 
     B --> EP
     B --> TC
     EP <-->|Authorization Code + PKCE| KC
     TC <-->|Authorization Code + PKCE| KC
     KC <-->|LDAP user federation| LDAP
-    KC -.->|Identity brokering| IDP
+    KC <-->|OIDC identity brokering| EIDP
     KC --> PG
     EP -->|Bearer access JWT| API
     TC -->|Bearer access JWT| API
 ```
 
-## Mental model
+## Trust chain
 
-- **LDAP**: where a corporate user can come from.
-- **OIDC**: how an application learns that the user authenticated.
-- **OAuth 2.0**: how clients obtain tokens for protected resources.
-- **JWT**: a signed token format used here for ID/access tokens.
-- **SSO**: reuse of the Keycloak browser session across multiple clients.
-- **SAML**: an alternative enterprise federation protocol, used here conceptually for external IdPs/legacy systems.
+```text
+External IdP authenticates external-alice
+              |
+              v
+Main Keycloak trusts that OIDC result
+              |
+              v
+Main Keycloak issues enterprise-lab JWT
+              |
+              v
+Spring API validates Main Keycloak JWT
+```
+
+LDAP federation is different: Main Keycloak directly talks to a directory. In identity brokering, Main Keycloak redirects authentication to another IdP and trusts the protocol result.

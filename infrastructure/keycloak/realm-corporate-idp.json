@@ -1,0 +1,32 @@
+{
+  "realm": "corporate",
+  "enabled": true,
+  "displayName": "Corporate Identity Provider",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "roles": {"realm": [{"name":"corporate-user","description":"User authenticated by the external corporate IdP"}]},
+  "clients": [{
+    "clientId":"enterprise-lab-broker",
+    "name":"Enterprise Lab Broker",
+    "enabled":true,
+    "protocol":"openid-connect",
+    "publicClient":false,
+    "clientAuthenticatorType":"client-secret",
+    "secret":"broker_secret_dev",
+    "standardFlowEnabled":true,
+    "directAccessGrantsEnabled":false,
+    "implicitFlowEnabled":false,
+    "redirectUris":["http://localhost:8080/realms/enterprise-lab/broker/corporate-oidc/endpoint"],
+    "webOrigins":["http://localhost:8080"]
+  }],
+  "users": [{
+    "username":"external-alice",
+    "enabled":true,
+    "emailVerified":true,
+    "firstName":"External",
+    "lastName":"Alice",
+    "email":"external.alice@corp.example",
+    "realmRoles":["corporate-user"],
+    "credentials":[{"type":"password","value":"ExternalAlice123!","temporary":false}]
+  }]
+}
